@@ -2,11 +2,13 @@
 
 import {z} from 'zod';
 import {useForm, zodResolver} from '@mantine/form';
-import {NumberInput, TextInput, Button, Box, Group, PasswordInput} from '@mantine/core';
-import {SectionContainer, NoticeMessage} from "tp-kit/components";
+import {TextInput, Button, Box, PasswordInput} from '@mantine/core';
+import {NoticeMessage, SectionContainer} from "tp-kit/components";
 import Link from "next/link";
-import {useState, useEffect} from "react";
-import {useZodI18n} from "tp-kit/components/providers";
+import {useZodI18n, ZodI18nProvider} from "tp-kit/components/providers";
+import {useState} from "react";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
 
 const schema = z.object({
     name: z.string().min(2),
@@ -14,11 +16,47 @@ const schema = z.object({
     password: z.string().min(6),
 });
 
-
 type FormValues = z.infer<typeof schema>;
 
-export const Form = function() {
+export const Form = function () {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const router = useRouter()
+    const supabase = createClientComponentClient()
 
+
+    const [notices, setNotices] = useState([]);
+
+    function error(message) {
+        setNotices([...notices, {type: "error", message}]);
+    }
+
+    function success(message) {
+        setNotices([...notices, {type: "success", message}]);
+    }
+
+    const handleSignUp = async (values) => {
+
+        const result = await supabase.auth.signUp({
+            email: values.email,
+            password: values.password,
+            options: {
+                emailRedirectTo: `${location.origin}/auth/callback`,
+                data: {
+                    name: values.name,
+                }
+            },
+        })
+
+        if (result.error != null) {
+            error("Cette adresse n'est pas disponible.");
+        } else {
+            success("Votre inscription a bien été prise en compte. Validez votre adresse mail pour vous connecter");
+        }
+
+        console.log(result);
+    }
+    // Applique les traductions à zod
     useZodI18n(z);
 
     const form = useForm<FormValues>({
@@ -30,33 +68,15 @@ export const Form = function() {
         },
     });
 
-    const [notices, setNotices] = useState([]);
-
-    function Error(message) {
-        setNotices([...notices, {type: "error", message}]);
-    }
-
-    function Success(message) {
-        setNotices([...notices, {type: "success", message}]);
-    }
-
     return (
         <SectionContainer wrapperClassName="max-w-5xl">
-            <Box maw={340} mx="auto" className="shadow-lg p-7 my-2 bg-white rounded">
+            <Box maw={350} mx="auto" className="shadow-md my-5 bg-white rounded">
+                <form onSubmit={form.onSubmit((handleSignUp))} className="p-5">
+                    <h1 className="mb-3">INSCRIPTION</h1>
 
-                {notices.map((notice, i) => (
-                    <NoticeMessage key={i}{...notice}/>
-                ))}
-
-                <h1 className="mb-3">INSCRIPTION</h1>
-
-                <form onSubmit={form.onSubmit((values) => {
-                    if (values.name === 'error') {
-                        Error("Cette adresse n'est pas disponible");
-                    } else {
-                        Success("Votre inscription a bien été prise en compte. Validez votre adresse mail pour vous connecter");
-                    }
-                })}>
+                    {notices.map((notice, i) => (
+                        <NoticeMessage key={i}{...notice}/>
+                    ))}
 
                     <TextInput
                         withAsterisk
@@ -68,7 +88,7 @@ export const Form = function() {
                     />
                     <TextInput
                         withAsterisk
-                        label="Email"
+                        label="Adresse email"
                         placeholder="example@mail.com"
                         {...form.getInputProps('email')}
                     />
@@ -79,16 +99,14 @@ export const Form = function() {
                         {...form.getInputProps('password')}
                     />
 
-                    <Button type="submit" className="bg-green-600 flex justify-center my-5 hover:bg-green-700"
+                    <Button type="submit" className="bg-green-600 my-5 items-center hover:bg-green-600 h-12"
                             fullWidth="true">
                         S'inscrire
                     </Button>
-
-                    <Link href="/connexion" className="text-green-700 flex justify-center">
-                        Déjà un compte? Se connecter
-                    </Link>
+                    <Link href={'../connexion'}><p className="text-sm text-center text-green">Déjà un compte ? Se
+                        connecter</p></Link>
                 </form>
             </Box>
         </SectionContainer>
-);
-}
+    );
+};
