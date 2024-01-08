@@ -1,16 +1,40 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {Button, SectionContainer} from "tp-kit/components";
+import Link from "next/link";
 
-export const Profil = function () {
+type props = {
+    user : any
+}
+
+export const Profil = function ({userData}) {
+
+    const router = useRouter()
+    const supabase = createClientComponentClient()
+
+    const handleSignOut = async() => {
+        await supabase.auth.signOut()
+        router.refresh()
+    }
+
+    console.log(userData);
+
     return (
-        <div>
-
-
-            <Button type="submit" className="my-5 items-center h-12" fullWidth="true" variant="outline">
-                Se déconnecter
-            </Button>
-
-        </div>
+            <div className="flex">
+                <div className="bg-white rounded-lg p-6 flex-auto w-4 mr-7">
+                    <h1>MON COMPTE</h1>
+                    <br/>
+                    <p>Bonjour, {userData.userData.session.user.user_metadata.name}</p>
+                    <br/>
+                    <p className="font-bold">
+                        Nom : {userData.userData.session.user.user_metadata.name}
+                        <br/>
+                        Email : {userData.userData.session.user.email}
+                    </p>
+                    <Button onClick={handleSignOut} variant="outline" fullWidth="true" className="mt-10">Se déconnecter</Button>
+                </div>
+            </div>
     );
 };
