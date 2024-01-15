@@ -15,17 +15,19 @@ export async function createOrder(cart: CartData) {
     console.log("User not logged in");
     }
 
-  console.log(await prisma.order.create({
-    data: {
-      userid: userId,
-      total: computeCartTotal(cart.lines),
-      lines: {
-        create: cart.lines.map(line => ({
-          productId: line.product.id,
-          qty: line.qty,
-          subtotal: computeLineSubtotal(line)
-        }))
-      }
-    }
-  }));
+  console.log(
+      await prisma.order.create({
+        data: {
+          userId: userId,
+          total: computeCartTotal(cart.lines),
+          lines: {
+            create: cart.lines.map((line) => ({
+              productId: line.product.id,
+              qty: line.qty,
+              subtotal: computeLineSubtotal(line),
+            })),
+          },
+        },
+      })
+  );
 }
