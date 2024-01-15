@@ -101,7 +101,7 @@ export const Form = function () {
 
                     <Button type="submit" className="bg-green-600 my-5 items-center hover:bg-green-600 h-12"
                             fullWidth>
-                        Créer un compte
+                        Se créer un compte
                     </Button>
                     <Link href={'../connexion'}><p className="text-sm text-center text-green">Déjà un compte ? Se
                         connecter</p></Link>
