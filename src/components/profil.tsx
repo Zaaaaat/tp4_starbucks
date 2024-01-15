@@ -6,10 +6,10 @@ import {Button, SectionContainer} from "tp-kit/components";
 import Link from "next/link";
 
 type props = {
-    user : any
+    userData : any
 }
 
-export const Profil = function ({userData}) {
+export const Profil = function ({userData} : props) {
 
     const router = useRouter()
     const supabase = createClientComponentClient()
@@ -33,7 +33,7 @@ export const Profil = function ({userData}) {
                         <br/>
                         Email : {userData.userData.session.user.email}
                     </p>
-                    <Button onClick={handleSignOut} variant="outline" fullWidth="true" className="mt-10">Se déconnecter</Button>
+                    <Button onClick={handleSignOut} variant="outline" fullWidth className="mt-10">Se déconnecter</Button>
                 </div>
             </div>
     );

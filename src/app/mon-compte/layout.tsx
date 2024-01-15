@@ -8,10 +8,12 @@ import {createServerComponentClient} from "@supabase/auth-helpers-nextjs";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {Profil} from "../../components/profil";
+import NotFoundPage from "../not-found";
 
 export default async function Layout({children}: { children: ReactNode }) {
     const supabase = createServerComponentClient({cookies});
     const userData = await getUser(supabase);
+    if (userData.session === null) return NotFoundPage()
     const orders = await prisma.order.findMany({
         where: {
             userId: userData.session.user.id

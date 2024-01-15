@@ -12,8 +12,8 @@ export async function createOrder(cart: CartData) {
   const userId = data.user?.id;
 
   if (!userId) {
-    console.log("User not logged in");
-    }
+    return false
+  }
 
   console.log(
       await prisma.order.create({

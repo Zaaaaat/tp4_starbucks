@@ -34,7 +34,7 @@ export const Form = function() {
         },
     });
 
-    const handleSignIn = async (values) => {
+    const handleSignIn = async (values :  {email: string, password:string}) => {
 
         const signin = await supabase.auth.signInWithPassword({
             email: values.email,
@@ -70,7 +70,7 @@ export const Form = function() {
                         {...form.getInputProps('password')}
                     />
 
-                    <Button type="submit" className="bg-green-600 flex justify-center my-5 hover:bg-green-700" fullWidth="true">
+                    <Button type="submit" className="bg-green-600 flex justify-center my-5 hover:bg-green-700" fullWidth>
                         Se connecter
                     </Button>
 

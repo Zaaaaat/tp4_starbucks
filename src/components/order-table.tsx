@@ -12,14 +12,7 @@ type Props = {
 const OrderTable: FC<Props> = memo(function ({ orders }) {
   const router = useRouter();
 
-  const handleRowClic = useCallback(
-    (order: Order) => {
-      router.push(`/mon-compte/commandes/${order.id}`);
-    },
-    [router],
-  );
-
-  return <OrderTableLayout orders={orders} onRowClick={handleRowClic} />;
+  return <OrderTableLayout orders={orders} onRowClick={(order) => {router.push(`/mon-compte/commandes/${order.id}`)}} />;
 });
 
 OrderTable.displayName = "OrderTable";

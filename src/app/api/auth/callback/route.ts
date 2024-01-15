@@ -1,25 +1,18 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { create } from 'domain'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { NextRequest } from '../../../../../node_modules/next/server'
 
 
-export async function POST(request: Request) {
+export async function GET(request : NextRequest) {
     const requestUrl = new URL(request.url)
-    const formData = await request.formData()
-    const email = String(formData.get('email'))
-    const password = String(formData.get('password'))
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient(cookieStore)
+    const code = requestUrl.searchParams.get('code')
 
-    await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-            emailRedirectTo: `${requestUrl.origin}/auth/callback`,
-        },
-    })
+    if (code) {
+        const supabase = createRouteHandlerClient({ cookies })
+        await supabase.auth.exchangeCodeForSession(code)
+    }
 
-    return NextResponse.redirect(requestUrl.origin, {
-        status: 301,
-    })
+    return NextResponse.redirect(requestUrl.origin)
 }

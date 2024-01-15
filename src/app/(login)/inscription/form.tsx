@@ -3,7 +3,7 @@
 import {z} from 'zod';
 import {useForm, zodResolver} from '@mantine/form';
 import {TextInput, Button, Box, PasswordInput} from '@mantine/core';
-import {NoticeMessage, SectionContainer} from "tp-kit/components";
+import {NoticeMessage,NoticeMessageData, SectionContainer} from "tp-kit/components";
 import Link from "next/link";
 import {useZodI18n, ZodI18nProvider} from "tp-kit/components/providers";
 import {useState} from "react";
@@ -25,17 +25,17 @@ export const Form = function () {
     const supabase = createClientComponentClient()
 
 
-    const [notices, setNotices] = useState([]);
+    const [notices, setNotices] = useState<NoticeMessageData[]>([]);
 
-    function error(message) {
+    function error(message : string) {
         setNotices([...notices, {type: "error", message}]);
     }
 
-    function success(message) {
+    function success(message : string) {
         setNotices([...notices, {type: "success", message}]);
     }
 
-    const handleSignUp = async (values) => {
+    const handleSignUp = async (values : {name: string ,email : string, password : string}) => {
 
         const result = await supabase.auth.signUp({
             email: values.email,
@@ -75,7 +75,7 @@ export const Form = function () {
                     <h1 className="mb-3">INSCRIPTION</h1>
 
                     {notices.map((notice, i) => (
-                        <NoticeMessage key={i}{...notice}/>
+                        <NoticeMessage key={i} {...notice}/>
                     ))}
 
                     <TextInput
@@ -100,8 +100,8 @@ export const Form = function () {
                     />
 
                     <Button type="submit" className="bg-green-600 my-5 items-center hover:bg-green-600 h-12"
-                            fullWidth="true">
-                        S'inscrire
+                            fullWidth>
+                        Créer un compte
                     </Button>
                     <Link href={'../connexion'}><p className="text-sm text-center text-green">Déjà un compte ? Se
                         connecter</p></Link>
