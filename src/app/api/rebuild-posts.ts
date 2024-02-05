@@ -1,1 +1,0 @@
-process.env.SUPABASE_WEBHOOK_KEY;
