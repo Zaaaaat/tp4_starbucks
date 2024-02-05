@@ -1,6 +1,6 @@
 "use client";
 
-import { Order } from "@prisma/client";
+import    { Order } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { FC, memo, useCallback } from "react";
 import { OrderTableLayout } from "tp-kit/components";
